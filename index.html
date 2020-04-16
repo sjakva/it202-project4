@@ -72,18 +72,21 @@
   <main class="mdc-top-app-bar--fixed-adjust">
       
     <div id="search" class="view">
-        <strong>Find and add countries</strong>
+        
+    <h1 class="mdc-typography--headline1">Search</h1>
+        <h3>Find and add countries</h3>
             <!-- Data List -->
-        <input id="country" class="searchInput" list="countries">
+        <input id="country" class="searchInput mdc-text-field__input" list="countries">
         <datalist id="countries">
         </datalist>
         
-        <br>
+        <br><br>
            <!-- Buttons for Data List -->
             <button id="addCountry" class="mdc-button mdc-button--raised">
               <div class="mdc-button__ripple"></div>
               <span class="mdc-button__label">Add selected country to list</span>
             </button>
+        <br><br>
             <div id="countriesAdded"></div>
             <button id="chartCountries" class="mdc-button mdc-button--raised">
               <div class="mdc-button__ripple"></div>
