@@ -10,12 +10,15 @@
 
   <style>
 
-    body {margin: 0;}
+    body {
+        margin: 0;
+        background-color: #ffe8cf;
+      }
     main {margin-left: 8px;}
 
    :root {--mdc-theme-primary: #00a6a0;}
    .view {display: none;}
-      
+   
   </style>
 
   </head>
@@ -68,7 +71,26 @@
     <!-- DIVS/PAGES -->
   <main class="mdc-top-app-bar--fixed-adjust">
       
-    <div id="search" class="view">Find and add countries</div>
+    <div id="search" class="view">
+        <strong>Find and add countries</strong>
+            <!-- Data List -->
+        <input id="country" class="searchInput" list="countries">
+        <datalist id="countries">
+        </datalist>
+        
+        <br>
+           <!-- Buttons for Data List -->
+            <button id="addCountry" class="mdc-button mdc-button--raised">
+              <div class="mdc-button__ripple"></div>
+              <span class="mdc-button__label">Add selected country to list</span>
+            </button>
+            <div id="countriesAdded"></div>
+            <button id="chartCountries" class="mdc-button mdc-button--raised">
+              <div class="mdc-button__ripple"></div>
+              <span class="mdc-button__label">Chart Countries</span>
+            </button>
+        
+      </div>
       
     <div id="data" class="view">Data table</div>
       
@@ -82,14 +104,47 @@
     const appBar = mdc.topAppBar.MDCTopAppBar.attachTo(document.querySelector('header.mdc-top-app-bar'));
     const drawer = mdc.drawer.MDCDrawer.attachTo(document.querySelector('.mdc-drawer'));
     
-    let api = "https://pomber.github.io/covid19/timeseries.json"
+      
+      // initial data loading
+    let api = "https://pomber.github.io/covid19/timeseries.json";
+    let data;
+      
+    fetch(api)          // fetch response from api
+      .then(response => response.json())
+      .then(json => {
+        data = json;    // store json object in global variable for reference
+
+        for (country in data) {                                     // for each country
+          let option = document.createElement("OPTION");               // create an "option" element
+          option.value = country;                                      // assign country as value as we loop through 
+          document.querySelector("#countries").appendChild(option);    // append option element to datalist
+        }
+      });
+      
+    let countriesList = [];    // empty data object for list of countries
+    
+      // 
+//     const addToCountriesList = (name) => {
+//         countriesList.push(name);
+//         document.querySelector("#countriesAdded")
+//           .textContent = countriesList.toString();
+//       }
+    
+    document.querySelector("#addCountry")                             // select "add country" button
+        .addEventListener("click",(e) => {                            // on click event, 
+          let countryName = document.querySelector("#country").value; // store input value
+//          addToCountriesList(countryName);
+          countriesList.push(countryName);                            // push name to list of countries
+          document.querySelector("#countriesAdded").textContent = countriesList; // add to selected countries list 
+        });
+      
+      
     const hideScreens = () => {     // hides all divs with class "view" 
       document.querySelectorAll("div.view").forEach( (item) => {
         item.style.display = "none";
       })
     }
-
-    
+   
     document.querySelector(".mdc-top-app-bar__navigation-icon")
       .addEventListener("click", 
           (e) => {drawer.open = true;}  // open drawer
@@ -106,7 +161,8 @@
 
         })
     })
-
+      
+     
 
     </script>
       
