@@ -17,8 +17,13 @@
       }
     main {margin-left: 8px;}
 
-   :root {--mdc-theme-primary: #00a6a0;}
+   :root {
+       --mdc-theme-primary: #00a6a0;
+       --mdc-theme-secondary: #802415
+      }
    .view {display: none;}
+   .mdc-drawer__content {background-color: #D4A16A;}
+   .mdc-list-item {color: #802415;}   
    
   </style>
 
@@ -79,7 +84,13 @@
       
     <div id="home" class="view">
         <h1 class="mdc-typography--headline1">Home</h1>
-            <h3>home page, include info/instructions</h3>
+            <h3>Search for confirmed COVID-19 (Coronavirus) cases per country</h3>
+        <br>
+        <p>To begin, click on the search icon to lookup and select countries. </p>
+        <br>
+        <p>After you have made your selections, you may view the data as a table, or in a line chart.</p>
+        <br><br>
+        <p>**All data has been extracted from https://github.com/pomber/covid19</p>
       </div>
       
     <div id="search" class="view">
@@ -163,7 +174,7 @@
           createTable();
           // change screen
           showPage("data");
-          drawChart();
+          drawChart();     // draws chart on different page
         });
       
       // ----------------------------------------------------------------------------//
@@ -197,7 +208,7 @@
                 // column header (date)
                 let dateHeader = colHead.cloneNode(true);
                 dateHeader.classList.remove("mdc-data-table__header-cell--numeric");
-                dateHeader.textContent = "Date (YYYY-MM-DD)"
+                dateHeader.textContent = "Date (Year-Month-Date)"
                 rowHead.appendChild(dateHeader);
                 document.querySelector("table thead")
                     .appendChild(rowHead);
@@ -240,6 +251,46 @@
       // ----------------------------------------------------------------------------//
       // -----------------------End of table functions -----------------------------//
       
+    drawChart = () => {
+        let chartArray = [];    // create empty array 
+        let header = ["Date"];  //  and header (date)
+        for (let country of countriesList) {
+          header.push(country); // append country 
+        }
+        chartArray.push(header); // append header to chart array
+    
+        // follow similar looping process as table
+        for (let i = 0; i < data[countriesList[0]].length; i++) {
+          let rowData = [];            // create new array for each new row
+          rowData.push(data[countriesList[0]][i]["date"]); // append current date
+          for (let country of countriesList) {
+            rowData.push(data[country][i]["confirmed"]);   // append number of cases
+          }
+          chartArray.push(rowData);                        // append to chart array
+        }
+
+        let dataChart = google.visualization.arrayToDataTable(chartArray);
+        let options = {
+          title: 'Confirmed Coronavirus Cases',
+          width: window.innerWidth*0.6,
+          height: window.innerHeight*0.6,
+          curveType: 'function',
+          chartArea: {
+              backgroundColor: {
+                fill: '#FFB6AA',
+                fillOpacity: 0.1
+                },
+          },
+          backgroundColor: {
+              fill: '#ffe8cf',
+              fillOpacity: 0.8
+          }
+        };
+        let chart = new google.visualization.LineChart(document.querySelector('#chart'));
+
+        chart.draw(dataChart, options);
+    }          
+              
     // Page controls  
     const hideScreens = () => {     // hides all divs with class "view" 
       document.querySelectorAll("div.view").forEach( (item) => {
