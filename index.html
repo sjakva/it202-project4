@@ -12,17 +12,28 @@
   <style>
 
     body {
-        margin: 0;
+        margin: 0 auto;
         background-color: #ffe8cf;
         color: #550C00;
+        height: auto;
+        width: auto;
+        
       }
     main {margin-left: 8px;}
 
    :root {--mdc-theme-primary: #00a6a0;}
    .view {display: none;}
+   .mdc-top-app-bar, 
+      .mdc-top-app-bar .mdc-top-app-bar__action-item {color: #ffb4b4;}
    .mdc-drawer__content {background-color: #D4A16A;}
    .mdc-drawer .mdc-list-item--activated .mdc-list-item__graphic {color: #006b49;}
    .mdc-drawer .mdc-list-item--activated .mdc-list-item__text {color: #006b49;} 
+   .mdc-data-table__header-row {
+          background-color: #006b49;
+      }
+   .mdc-data-table__row {
+          background-color: #00a6a0;
+      }
    
   </style>
 
@@ -133,6 +144,9 @@
       
     <div id="chart" class="view">
         <h1 class="mdc-typography--headline1">Chart</h1>
+        <div id="loadChart"></div>
+        <br>
+        <p><em>Note: if date labels at the bottom are resulting in an error, you may hover over individual data points on the graph to view confirmed cases at a particular date.</em></p>
       </div>
 
   </main>
@@ -258,11 +272,11 @@
       
     drawChart = () => {
         let chartArray = [];    // create empty array 
-        let header = ["Date"];  //  and header (date)
+        let date = ["Date"];  //  and header (date)
         for (let country of countriesList) {
-          header.push(country); // append country 
+          date.push(country); // append country 
         }
-        chartArray.push(header); // append header to chart array
+        chartArray.push(date); // append header to chart array
     
         // follow similar looping process as table
         for (let i = 0; i < data[countriesList[0]].length; i++) {
@@ -282,16 +296,15 @@
           curveType: 'function',
           chartArea: {
               backgroundColor: {
-                fill: '#FFB6AA',
-                fillOpacity: 0.1
+                fill: '#00a6a0',
+                fillOpacity: 0.5
                 },
           },
           backgroundColor: {
-              fill: '#ffe8cf',
-              fillOpacity: 0.8
+              fill: '#006b49',
           }
         };
-        let chart = new google.visualization.LineChart(document.querySelector('#chart'));
+        let chart = new google.visualization.LineChart(document.querySelector('#loadChart'));
 
         chart.draw(dataChart, options);
     }          
